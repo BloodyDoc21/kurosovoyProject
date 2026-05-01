@@ -31,7 +31,7 @@ class OrderItemInline(admin.TabularInline):
 class OrderAdmin(admin.ModelAdmin):
     list_display = ('id', 'buyer', 'status', 'total_price', 'created_at')
     list_display_links = ('id',)
-    list_editable = ('status',)        # БП-6: статус меняет только админ
+    list_editable = ('status',)        
     list_filter = ('status', 'created_at')
     readonly_fields = ('total_price', 'created_at', 'updated_at')
     inlines = [OrderItemInline]

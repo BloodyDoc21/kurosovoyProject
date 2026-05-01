@@ -4,7 +4,6 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class Game(models.Model):
-    """Игра, к которой относятся аккаунты (ПЗ Табл. 15, 24)."""
     title = models.CharField('Название игры', max_length=200, db_index=True)
     slug = models.SlugField('URL-идентификатор', max_length=200, unique=True)
     description = models.TextField('Описание игры')
@@ -20,7 +19,6 @@ class Game(models.Model):
 
 
 class GameAccount(models.Model):
-    """Объявление о продаже игрового аккаунта (ПЗ Табл. 16, 25)."""
     title = models.CharField('Заголовок объявления', max_length=200, db_index=True)
     description = models.TextField('Описание аккаунта')
     price = models.DecimalField('Цена', max_digits=10, decimal_places=2)
@@ -31,13 +29,13 @@ class GameAccount(models.Model):
 
     game = models.ForeignKey(
         Game,
-        on_delete=models.PROTECT,           # ПЗ Табл. 29: нельзя удалить игру, пока есть аккаунты
+        on_delete=models.PROTECT,        
         related_name='accounts',
         verbose_name='Игра',
     )
     seller = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,          # ПЗ Табл. 29: удаление пользователя не удаляет объявления
+        on_delete=models.SET_NULL,          
         null=True,
         blank=True,
         related_name='accounts',
@@ -54,7 +52,6 @@ class GameAccount(models.Model):
 
 
 class Order(models.Model):
-    """Заказ покупателя (ПЗ Табл. 17, 26)."""
 
     class Status(models.TextChoices):
         NEW = 'new', 'Новый'
@@ -72,7 +69,7 @@ class Order(models.Model):
 
     buyer = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,           # ПЗ Табл. 29: удаление пользователя удаляет его заказы
+        on_delete=models.CASCADE,          
         related_name='orders',
         verbose_name='Покупатель',
     )
@@ -87,18 +84,17 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    """Позиция заказа (ПЗ Табл. 18, 27)."""
     price_at_purchase = models.DecimalField('Цена на момент покупки', max_digits=10, decimal_places=2)
 
     order = models.ForeignKey(
         Order,
-        on_delete=models.CASCADE,           # ПЗ Табл. 29: удаление заказа удаляет его позиции
+        on_delete=models.CASCADE,          
         related_name='items',
         verbose_name='Заказ',
     )
     account = models.ForeignKey(
         GameAccount,
-        on_delete=models.PROTECT,           # ПЗ Табл. 29: нельзя удалить аккаунт из купленного заказа
+        on_delete=models.PROTECT,         
         related_name='order_items',
         verbose_name='Игровой аккаунт',
     )
@@ -112,23 +108,22 @@ class OrderItem(models.Model):
 
 
 class Review(models.Model):
-    """Отзыв на игровой аккаунт (ПЗ Табл. 19, 28)."""
     rating = models.IntegerField(
         'Оценка',
-        validators=[MinValueValidator(1), MaxValueValidator(5)],  # БП-7
+        validators=[MinValueValidator(1), MaxValueValidator(5)],  
     )
     text = models.TextField('Текст отзыва')
     created_at = models.DateTimeField('Создан', auto_now_add=True, db_index=True)
 
     account = models.ForeignKey(
         GameAccount,
-        on_delete=models.CASCADE,           # ПЗ Табл. 29: удаление аккаунта удаляет его отзывы
+        on_delete=models.CASCADE,          
         related_name='reviews',
         verbose_name='Аккаунт',
     )
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,           # ПЗ Табл. 29: удаление пользователя удаляет его отзывы
+        on_delete=models.CASCADE,          
         related_name='reviews',
         verbose_name='Автор',
     )
@@ -138,9 +133,7 @@ class Review(models.Model):
         verbose_name_plural = 'Отзывы'
         ordering = ['-created_at']
         constraints = [
-            # БП-5: один пользователь — не более одного отзыва на один аккаунт
             models.UniqueConstraint(fields=['account', 'author'], name='unique_review_per_account'),
-            # БП-7: рейтинг 1..5 на уровне БД (соответствует CHECK из ПЗ Табл. 28)
             models.CheckConstraint(check=models.Q(rating__gte=1) & models.Q(rating__lte=5),
                                    name='review_rating_range'),
         ]
