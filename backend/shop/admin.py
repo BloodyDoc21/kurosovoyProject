@@ -9,6 +9,10 @@ class GameAdmin(admin.ModelAdmin):
     search_fields = ('title',)
     prepopulated_fields = {'slug': ('title',)}
 
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        return form
+
 
 @admin.register(GameAccount)
 class GameAccountAdmin(admin.ModelAdmin):

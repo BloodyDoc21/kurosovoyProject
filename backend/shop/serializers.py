@@ -27,6 +27,11 @@ class ReviewSerializer(serializers.ModelSerializer):
         account = attrs['account']
         if Review.objects.filter(account=account, author=request.user).exists():
             raise serializers.ValidationError('Вы уже оставили отзыв на этот аккаунт.')
+        purchased = OrderItem.objects.filter(
+            order__buyer=request.user, account=account
+        ).exists()
+        if not purchased:
+            raise serializers.ValidationError('Оставить отзыв можно только на купленный аккаунт.')
         return attrs
 
 

@@ -108,9 +108,10 @@ class OrderItem(models.Model):
 
 
 class Review(models.Model):
-    rating = models.IntegerField(
+    rating = models.PositiveSmallIntegerField(
         'Оценка',
-        validators=[MinValueValidator(1), MaxValueValidator(5)],  
+        choices=[(i, str(i)) for i in range(1, 6)],
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
     )
     text = models.TextField('Текст отзыва')
     created_at = models.DateTimeField('Создан', auto_now_add=True, db_index=True)
