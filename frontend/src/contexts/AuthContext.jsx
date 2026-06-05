@@ -40,7 +40,7 @@ export function AuthProvider({ children }) {
     await api.post('/auth/register/', data)
   }
 
-  const logout = () => {
+const logout = () => {
     localStorage.removeItem('access')
     localStorage.removeItem('refresh')
     setUser(null)

@@ -100,7 +100,9 @@ export default function AccountDetailPage() {
       </Link>
 
       <h1>{account.title}</h1>
-      <p className="detail-game">Игра: {account.game_title}</p>
+      <p className="detail-game">{account.game_cover && (
+        <img src={account.game_cover} alt={account.game_title} className="detail-cover" />
+      )}</p>
 
       <div className="detail-info">
         <span>Уровень: {account.level}</span>
@@ -110,7 +112,9 @@ export default function AccountDetailPage() {
 
       <p className="detail-description">{account.description}</p>
 
-      {inCart ? (
+      {!account.is_published ? (
+        <p className="account-unavailable">Этот аккаунт продан и недоступен для покупки.</p>
+      ) : inCart ? (
         <button className="btn-secondary" onClick={() => removeItem(account.id)}>
           Убрать из корзины
         </button>
@@ -119,7 +123,7 @@ export default function AccountDetailPage() {
           В корзину
         </button>
       )}
-
+      
       <section className="reviews">
         <h2>Отзывы ({account.reviews?.length || 0})</h2>
 

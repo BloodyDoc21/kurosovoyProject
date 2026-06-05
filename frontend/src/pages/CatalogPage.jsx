@@ -1,12 +1,20 @@
 import { useState, useEffect } from 'react'
 import api from '../services/api'
 import AccountCard from '../components/AccountCard'
+import { useSearchParams } from 'react-router-dom'
 
 export default function CatalogPage() {
   const [accounts, setAccounts] = useState([])
   const [games, setGames] = useState([])
   const [search, setSearch] = useState('')
-  const [selectedGame, setSelectedGame] = useState('')
+  const [searchParams] = useSearchParams()
+  const [selectedGame, setSelectedGame] = useState(searchParams.get('game') || '')
+
+  useEffect(() => {
+    setSelectedGame(searchParams.get('game') || '')
+    setPage(1)
+  }, [searchParams])
+  
   const [page, setPage] = useState(1)
   const [count, setCount] = useState(0)
   const [loading, setLoading] = useState(false)
@@ -55,7 +63,14 @@ export default function CatalogPage() {
 
   return (
     <div>
-      <h1>Каталог игровых аккаунтов</h1>
+      <div className="catalog-hero">
+        <h1>
+          Каталог <span className="hero-accent">игровых аккаунтов</span>
+        </h1>
+        <p className="catalog-hero-sub">
+          Покупай и продавай прокачанные аккаунты быстро и безопасно
+        </p>
+      </div>
 
       <div className="catalog-filters">
         <input
@@ -74,18 +89,28 @@ export default function CatalogPage() {
         </select>
       </div>
 
-      {loading && <p>Загрузка...</p>}
       {error && <p className="form-error">{error}</p>}
 
-      {!loading && !error && accounts.length === 0 && (
+      {loading ? (
+        <div className="account-grid">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="skeleton-card">
+              <div className="skeleton skeleton-cover" />
+              <div className="skeleton skeleton-line" />
+              <div className="skeleton skeleton-line short" />
+              <div className="skeleton skeleton-btn" />
+            </div>
+          ))}
+        </div>
+      ) : accounts.length === 0 ? (
         <p className="catalog-empty">Каталог пуст</p>
+      ) : (
+        <div className="account-grid">
+          {accounts.map((account, i) => (
+            <AccountCard key={account.id} account={account} index={i} />
+          ))}
+        </div>
       )}
-
-      <div className="account-grid">
-        {accounts.map((account) => (
-          <AccountCard key={account.id} account={account} />
-        ))}
-      </div>
 
       {totalPages > 1 && (
         <div className="pagination">

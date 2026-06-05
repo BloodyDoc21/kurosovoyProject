@@ -11,11 +11,16 @@ class GameSerializer(serializers.ModelSerializer):
 
 class ReviewSerializer(serializers.ModelSerializer):
     author = serializers.StringRelatedField(read_only=True)
+    is_mine = serializers.SerializerMethodField()
 
     class Meta:
         model = Review
-        fields = ('id', 'rating', 'text', 'created_at', 'account', 'author')
-        read_only_fields = ('id', 'created_at', 'author')
+        fields = ('id', 'rating', 'text', 'created_at', 'account', 'author', 'is_mine')
+        read_only_fields = ('id', 'created_at', 'author', 'is_mine')
+
+    def get_is_mine(self, obj):
+        request = self.context.get('request')
+        return bool(request and request.user.is_authenticated and obj.author_id == request.user.id)
 
     def validate_rating(self, value):
         if not 1 <= value <= 5:
@@ -38,24 +43,26 @@ class ReviewSerializer(serializers.ModelSerializer):
 class GameAccountSerializer(serializers.ModelSerializer):
     seller = serializers.StringRelatedField(read_only=True)
     game_title = serializers.CharField(source='game.title', read_only=True)
+    game_cover = serializers.ImageField(source='game.cover_image', read_only=True)
     reviews = ReviewSerializer(many=True, read_only=True)
 
     class Meta:
         model = GameAccount
         fields = ('id', 'title', 'description', 'price', 'level',
                   'is_published', 'created_at', 'updated_at',
-                  'game', 'game_title', 'seller', 'reviews')
+                  'game', 'game_title', 'game_cover', 'seller', 'reviews')
         read_only_fields = ('id', 'created_at', 'updated_at', 'seller')
 
 
 class GameAccountListSerializer(serializers.ModelSerializer):
     seller = serializers.StringRelatedField(read_only=True)
     game_title = serializers.CharField(source='game.title', read_only=True)
+    game_cover = serializers.ImageField(source='game.cover_image', read_only=True)
 
     class Meta:
         model = GameAccount
         fields = ('id', 'title', 'price', 'level', 'is_published',
-                  'created_at', 'game', 'game_title', 'seller')
+                  'created_at', 'game', 'game_title', 'game_cover', 'seller')
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
@@ -107,6 +114,7 @@ class OrderCreateSerializer(serializers.Serializer):
             OrderItem(order=order, account=acc, price_at_purchase=acc.price)
             for acc in accounts
         ])
+        accounts.update(is_published=False)
         return order
 
     def to_representation(self, instance):

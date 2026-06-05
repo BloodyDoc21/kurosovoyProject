@@ -7,6 +7,8 @@ import RegisterPage from '../pages/RegisterPage'
 import CartPage from '../pages/CartPage'
 import OrdersPage from '../pages/OrdersPage'
 import ProfilePage from '../pages/ProfilePage'
+import MyAccountsPage from '../pages/MyAccountsPage'
+import AccountFormPage from '../pages/AccountFormPage'
 import NotFoundPage from '../pages/NotFoundPage'
 
 export default function AppRouter() {
@@ -30,6 +32,30 @@ export default function AppRouter() {
         element={
           <ProtectedRoute>
             <ProfilePage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/my-accounts"
+        element={
+          <ProtectedRoute>
+            <MyAccountsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/my-accounts/new"
+        element={
+          <ProtectedRoute>
+            <AccountFormPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/my-accounts/:id/edit"
+        element={
+          <ProtectedRoute>
+            <AccountFormPage />
           </ProtectedRoute>
         }
       />

@@ -1,18 +1,24 @@
 import { createContext, useContext, useState, useEffect } from 'react'
+import { useAuth } from './AuthContext'
 
 const CartContext = createContext(null)
 
 export const useCart = () => useContext(CartContext)
 
+const cartKey = (user) => (user ? `cart_${user.id}` : 'cart_guest')
+
 export function CartProvider({ children }) {
-  const [items, setItems] = useState(() => {
-    const stored = localStorage.getItem('cart')
-    return stored ? JSON.parse(stored) : []
-  })
+  const { user } = useAuth()
+  const [items, setItems] = useState([])
 
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(items))
-  }, [items])
+    const stored = localStorage.getItem(cartKey(user))
+    setItems(stored ? JSON.parse(stored) : [])
+  }, [user])
+
+  useEffect(() => {
+    localStorage.setItem(cartKey(user), JSON.stringify(items))
+  }, [items, user])
 
   const addItem = (account) => {
     setItems((prev) => {

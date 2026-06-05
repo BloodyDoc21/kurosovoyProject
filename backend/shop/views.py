@@ -22,6 +22,10 @@ class GameAccountViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         qs = GameAccount.objects.select_related('game', 'seller')
+        if self.request.query_params.get('mine') == 'true':
+            if self.request.user.is_authenticated:
+                return qs.filter(seller=self.request.user)
+            return qs.none()
         if self.action == 'list':
             return qs.filter(is_published=True)
         return qs
