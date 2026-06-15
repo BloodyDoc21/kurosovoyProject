@@ -40,15 +40,15 @@ export default function Footer() {
 
         <div className="footer-col">
           <p className="footer-title">Контакты</p>
-          <a href="mailto:support@gamemarket.ru">
+          <a href="sven-60@yandex.ru">
             <Mail size={15} />
-            support@gamemarket.ru
+            sven-60@yandex.ru
           </a>
-          <a href="https://t.me" target="_blank" rel="noreferrer">
+          <a href="https://t.me/FashionableGuy2" target="_blank" rel="noreferrer">
             <Send size={15} />
             Telegram
           </a>
-          <a href="https://github.com" target="_blank" rel="noreferrer">
+          <a href="https://github.com/BloodyDoc21/kurosovoyProject" target="_blank" rel="noreferrer">
             <Globe size={15} />
             GitHub
           </a>

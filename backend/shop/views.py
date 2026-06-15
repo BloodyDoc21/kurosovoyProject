@@ -7,6 +7,8 @@ from .serializers import (
     OrderSerializer, OrderCreateSerializer, ReviewSerializer,
 )
 from .permissions import IsSellerOrReadOnly, IsAuthorOrReadOnly
+from django.db.models import ProtectedError
+from rest_framework import status
 
 
 class GameViewSet(viewsets.ReadOnlyModelViewSet):
@@ -44,6 +46,17 @@ class GameAccountViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(seller=self.request.user)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        try:
+            instance.delete()
+        except ProtectedError:
+            return Response(
+                {'detail': 'Нельзя удалить аккаунт, который уже был куплен. Его можно только скрыть с публикации.'},
+                status=status.HTTP_409_CONFLICT,
+            )
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class OrderViewSet(viewsets.ModelViewSet):

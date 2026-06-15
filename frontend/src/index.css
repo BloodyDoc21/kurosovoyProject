@@ -764,17 +764,18 @@ a {
 }
 .account-card-cover {
   width: 100%;
-  height: 130px;
+  aspect-ratio: 16 / 9;
+  height: auto;
   object-fit: cover;
-  border-radius: 10px;
-  margin-bottom: 12px;
-  border: 1px solid var(--border);
+  object-position: center;
+  border-bottom: 1px solid var(--border);
 }
 
 .detail-cover {
   width: 100%;
-  max-height: 260px;
-  object-fit: cover;
+  max-height: 300px;
+  object-fit: contain;
+  background: var(--surface);
   border-radius: 12px;
   margin-bottom: 20px;
   border: 1px solid var(--border);
@@ -856,8 +857,10 @@ a {
 .content {
   flex: 1;
   max-width: 1100px;
+  margin: 0 auto;
   padding: 28px 36px;
   min-width: 0;
+  width: 100%;
 }
 
 .content.with-sidebar {
@@ -1096,7 +1099,6 @@ a {
   border-radius: 10px;
   margin-left: auto;
 }
-/* Плавное появление контента страниц */
 .content > div {
   animation: pageIn 0.3s ease;
 }
@@ -1112,7 +1114,6 @@ a {
   }
 }
 
-/* Hero каталога */
 .catalog-hero {
   margin-bottom: 20px;
 }
@@ -1135,7 +1136,6 @@ a {
   font-size: 1.02rem;
 }
 
-/* Карточка */
 .account-card {
   display: flex;
   flex-direction: column;
@@ -1229,13 +1229,11 @@ a {
   text-shadow: 0 0 8px rgba(57, 255, 20, 0.35);
 }
 
-/* Кнопки: микроанимация нажатия */
 .btn-primary:active,
 .btn-secondary:active {
   transform: scale(0.97);
 }
 
-/* Скелетоны */
 .skeleton-card {
   border: 1px solid var(--border);
   border-radius: 16px;
@@ -1312,7 +1310,6 @@ a {
   display: none;
 }
 
-/* ===== Планшет: узкий сайдбар ===== */
 @media (max-width: 1024px) {
   .sidebar {
     width: 200px;
@@ -1323,7 +1320,6 @@ a {
   }
 }
 
-/* ===== Мобильные: бургер + выезжающий сайдбар ===== */
 @media (max-width: 768px) {
   .burger {
     display: flex;
@@ -1428,7 +1424,6 @@ a {
   }
 }
 
-/* ===== Узкие телефоны ===== */
 @media (max-width: 420px) {
   .account-grid {
     grid-template-columns: 1fr 1fr;
@@ -1544,4 +1539,12 @@ a {
 }
 .footer-inner-3 {
   grid-template-columns: 2fr 1fr 1fr;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--text);
+  -webkit-box-shadow: 0 0 0 1000px var(--surface) inset;
+  caret-color: var(--text);
+  border: 1px solid var(--border);
 }

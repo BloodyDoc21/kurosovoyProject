@@ -31,8 +31,9 @@ export default function MyAccountsPage() {
     try {
       await api.delete(`/accounts/${id}/`)
       setAccounts((prev) => prev.filter((a) => a.id !== id))
-    } catch {
-      setError('Не удалось удалить объявление.')
+    } catch (err) {
+      const msg = err.response?.data?.detail || 'Не удалось удалить объявление.'
+      setError(msg)
     }
   }
 
