@@ -1,22 +1,21 @@
 # ===== Python / Django (backend) =====
-backend/venv/
-backend/__pycache__/
-backend/**/__pycache__/
+backend\venv\
+backend\__pycache__\
+backend\**\__pycache__\
 *.py[cod]
-*.sqlite3
+backend\.env
 backend/.env
-backend/media/
-backend/staticfiles/
+backend\staticfiles\
+backend\-H
+backend\-d
 
 # ===== Node / React (frontend) =====
-frontend/node_modules/
-frontend/dist/
-frontend/.env
+frontend\node_modules\
+frontend\dist\
+frontend\.env
 
 # ===== Общее =====
 .DS_Store
 *.log
 .idea/
 .vscode/
-backend\-H
-backend\-d
